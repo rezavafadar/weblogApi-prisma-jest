@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
+
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id Int @id @default(autoincrement())
+  email String @unique
+  active Boolean @default(false)
+  profile UserProfile?
+}
+
+model UserProfile{
+  id Int @id @default(autoincrement())
+  fullname String @default("unknown user")
+  username String @unique
+  role Role @default(user)
+  avatar String @default("user-avatar.jpeg")
+  bio String? @db.VarChar(100)
+  age DateTime?
+  gender Gender @default(other)
+  instagram_account String?
+  twitter_account String?
+  user User @relation(fields: [user_id],references: [id])
+  user_id Int
+}
+
+
+enum Role {
+  user
+  admin
+}
+
+enum Gender{
+  other
+  man
+  female
+}
